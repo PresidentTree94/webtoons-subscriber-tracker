@@ -31,13 +31,11 @@ def get_webtoon_info(url):
       response = requests.get(url, headers=headers)
       response.raise_for_status()
       soup = BeautifulSoup(response.text, "html.parser")
-      title_element = soup.select_one("h1")
-      if title_element is None:
-        title_element = soup.select_one("h3.subj")
-      subscribers_element = soup.find(class_="ico_subscribe").find_next_sibling()
+      title_element = soup.select_one("h1") or soup.select_one("h3.subj")
+      subscribers_element = soup.find(class_="ico_subscribe").find_next_sibling().text.strip()
       if title_element and subscribers_element:
         title = title_element.get_text(separator=" ", strip=True)
-        subscribers = int(subscribers_element.text.strip().replace(",", ""))
+        subscribers = int(float(subscribers_element[:-1]) * 1000000) if "M" in subscribers_element else int(subscribers_element.replace(",", ""))
         return title, subscribers
       else:
         return None, None

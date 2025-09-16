@@ -87,13 +87,14 @@ class App(ctk.CTk):
     url = self.input_entry.get().strip()
     title, subscribers = get_webtoon_info(url)
     if title and subscribers is not None:
-        if url not in self.webtoon_data:
-            self.webtoon_data[url] = {"title": title, "data": {}}
-        current_month = datetime.now().strftime("%Y-%m")
-        self.webtoon_data[url]["data"][current_month] = subscribers
-        save_data(self.webtoon_data)
-        self.after(0, lambda: self.progress_bar.set(0.7))
-        self.after(0, self.populate_list)
+      if url not in self.webtoon_data:
+        self.webtoon_data[url] = {"title": title, "data": {}}
+      current_month = datetime.now().strftime("%Y-%m")
+      self.webtoon_data[url]["data"][current_month] = subscribers
+      save_data(self.webtoon_data)
+      self.after(0, lambda: self.progress_bar.set(0.7))
+      self.after(0, lambda: self.input_entry.delete(0, ctk.END))
+      self.after(0, self.populate_list)
     self.after(0, lambda: self.progress_bar.set(1.0))
     self.after(1000, lambda: self.progress_bar.set(0))
     self.after(0, lambda: self.set_buttons_state("normal"))
@@ -115,12 +116,12 @@ class App(ctk.CTk):
     total = len(self.webtoon_data)
 
     for i, url in enumerate(list(self.webtoon_data.keys()), start=1):
-        title, subscribers = get_webtoon_info(url)
-        if title and subscribers is not None:
-            self.webtoon_data[url]["data"][current_month] = subscribers
+      title, subscribers = get_webtoon_info(url)
+      if title and subscribers is not None:
+        self.webtoon_data[url]["data"][current_month] = subscribers
 
-        progress = i / total
-        self.after(0, lambda p=progress: self.progress_bar.set(p))
+      progress = i / total
+      self.after(0, lambda p=progress: self.progress_bar.set(p))
 
     save_data(self.webtoon_data)
     self.after(0, self.populate_list)
