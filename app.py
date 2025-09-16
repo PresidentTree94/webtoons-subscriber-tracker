@@ -4,6 +4,7 @@ import tkinter.messagebox as tkmb
 import threading
 import matplotlib.pyplot as plt
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 from data_manager import DATA_FOLDER, load_data, save_data, get_webtoon_info
 
@@ -83,6 +84,7 @@ class App(ctk.CTk):
   def _add_webtoon_thread(self):
     self.after(0, lambda: self.set_buttons_state("disabled"))
     self.after(0, lambda: self.progress_bar.set(0.3))
+    self.update_idletasks()
 
     url = self.input_entry.get().strip()
     title, subscribers = get_webtoon_info(url)
@@ -92,9 +94,11 @@ class App(ctk.CTk):
       current_month = datetime.now().strftime("%Y-%m")
       self.webtoon_data[url]["data"][current_month] = subscribers
       save_data(self.webtoon_data)
+
       self.after(0, lambda: self.progress_bar.set(0.7))
       self.after(0, lambda: self.input_entry.delete(0, ctk.END))
       self.after(0, self.populate_list)
+
     self.after(0, lambda: self.progress_bar.set(1.0))
     self.after(1000, lambda: self.progress_bar.set(0))
     self.after(0, lambda: self.set_buttons_state("normal"))
@@ -113,22 +117,27 @@ class App(ctk.CTk):
   def _update_all_webtoons_thread(self):
     self.after(0, lambda: self.set_buttons_state("disabled"))
     current_month = datetime.now().strftime("%Y-%m")
-    total = len(self.webtoon_data)
+    urls = list(self.webtoon_data.keys())
+    total = len(urls)
 
-    for i, url in enumerate(list(self.webtoon_data.keys()), start=1):
+    def fetch_and_update(url):
       title, subscribers = get_webtoon_info(url)
       if title and subscribers is not None:
         self.webtoon_data[url]["data"][current_month] = subscribers
+      return url
 
-      progress = i / total
-      self.after(0, lambda p=progress: self.progress_bar.set(p))
+    with ThreadPoolExecutor(max_workers=5) as executor:
+      for i, url in enumerate(executor.map(fetch_and_update, urls), start=1):
+        progress = i / total
+        self.after(0, lambda p=progress: self.progress_bar.set(p))
+        self.update_idletasks()
 
     save_data(self.webtoon_data)
     self.after(0, self.populate_list)
     self.after(0, lambda: tkmb.showinfo("Info", "All Webtoons updated."))
     self.after(0, lambda: self.progress_bar.set(1.0))
-    self.after(0, lambda: self.set_buttons_state("normal"))
     self.after(1000, lambda: self.progress_bar.set(0))
+    self.after(0, lambda: self.set_buttons_state("normal"))
 
   def get_top_webtoons_list(self, num_results=15):
     top_list = []

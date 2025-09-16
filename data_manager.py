@@ -22,13 +22,15 @@ def save_data(data):
   with open(DATA_PATH, "w") as f:
     json.dump(data, f, indent=2)
 
+session = requests.Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+})
+
 def get_webtoon_info(url):
   if url:
     try:
-      headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
-      }
-      response = requests.get(url, headers=headers)
+      response = session.get(url)
       response.raise_for_status()
       soup = BeautifulSoup(response.text, "html.parser")
       title_element = soup.select_one("h1") or soup.select_one("h3.subj")
