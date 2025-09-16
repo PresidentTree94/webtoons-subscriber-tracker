@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import json
 import tkinter.messagebox as tkmb
 
-DATA_FOLDER = "../data"
+DATA_FOLDER = "./data"
 DATA_FILE = "data.json"
 DATA_PATH = os.path.join(DATA_FOLDER, DATA_FILE)
 
