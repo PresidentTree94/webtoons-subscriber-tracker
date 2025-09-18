@@ -17,6 +17,8 @@ The application's user interface is divide into two columns:
 ## Saved Data
 Data is saved locally as `/data/data.json` alongside dated reports next to `main.exe`. The JSON saves all URLs, titles, and lists of monthly subscriber data. Therefore, it is the responsibility of the user to create their own backups. The program will not do that for them, nor can the data be replicated if the files are lost, corrupted, or deleted. Regularly backing up the `/data` folder, or at least the `data.json`, to a separate location is recommended to ensure the information is safe.
 
+![Screenshot of web scraper program](screenshot.png)
+
 ## Author
 - GitHub Profile: [PresidentTree94](https://github.com/PresidentTree94)
 - Frontend Mentor Profile: [PresidentTree94](https://www.frontendmentor.io/profile/PresidentTree94)
