@@ -64,11 +64,14 @@ class App(ctk.CTk):
       if isinstance(widget, ctk.CTkButton):
         widget.configure(state=state)
 
+  def normalize_sorting(self, title):
+    return "".join(title.split()).lower()
+
   def populate_list(self):
     for widget in self.list_frame.winfo_children():
       widget.destroy()
       
-    webtoon_items = sorted(self.webtoon_data.items(), key=lambda item: item[1]["title"])
+    webtoon_items = sorted(self.webtoon_data.items(), key=lambda item: self.normalize_sorting(item[1]["title"]))
     for i, (url, data) in enumerate(webtoon_items):
       title = data["title"]
       button = ctk.CTkButton(self.list_frame, text=title, command=lambda u=url: self.set_input_entry(u))
@@ -206,7 +209,7 @@ class App(ctk.CTk):
       f.write("\n" + "-"*50 + "\n")
 
       f.write("\n## Detailed Breakdown\n")
-      sorted_webtoons = sorted(self.webtoon_data.items(), key=lambda item: item[1]["title"])
+      sorted_webtoons = sorted(self.webtoon_data.items(), key=lambda item: self.normalize_sorting(item[1]["title"]))
       for url, data in sorted_webtoons:
         title = data["title"]
         monthly_data = data["data"]
