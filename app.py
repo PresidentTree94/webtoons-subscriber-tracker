@@ -65,7 +65,8 @@ class App(ctk.CTk):
         widget.configure(state=state)
 
   def normalize_sorting(self, title):
-    return "".join(title.split()).lower()
+    no_punc = title.translate(str.maketrans("", "", "'\u2019,"))
+    return "".join(no_punc.split()).lower()
 
   def populate_list(self):
     for widget in self.list_frame.winfo_children():
