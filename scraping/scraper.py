@@ -62,7 +62,7 @@ class WebtoonScraper:
       if "M" in subscribers_text:
         # Convert millions (e.g., "1.2M" -> 1200000)
         number_part = subscribers_text.replace("M", "").strip()
-        return int(float(number_part) * 1000000)
+        return int(round(float(number_part) * 1000000))
       else:
         # Regular number with commas (e.g., "15,234" -> 15234)
         return int(subscribers_text.replace(",", ""))
