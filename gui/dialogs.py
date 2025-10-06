@@ -10,7 +10,6 @@ class TopWebtoonsDialog:
       """Initialize the top webtoons dialog."""
       self.dialog = ctk.CTkToplevel(parent)
       self.dialog.title("Top 15 Webtoons")
-      self.dialog.geometry("500x400")
       self.dialog.grab_set()  # Make dialog modal
       
       self._create_table(webtoons_data)
@@ -27,7 +26,7 @@ class TopWebtoonsDialog:
       # Headers
       headers = ["Rank", "Title", "Subscribers"]
       for i, text in enumerate(headers):
-        ctk.CTkLabel(table_frame, text=text, font=("Arial", 14, "bold")).grid(row=0, column=i, padx=5, pady=5, sticky="ew")
+        ctk.CTkLabel(table_frame, text=text, font=("Arial", 14, "bold")).grid(row=0, column=i, padx=10, pady=5, sticky="ew")
       
       # Data rows
       for i, item in enumerate(webtoons_data[:15], start=1):

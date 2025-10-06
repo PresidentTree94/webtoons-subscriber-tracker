@@ -26,9 +26,8 @@ class App(ctk.CTk):
   def _setup_window(self):
     """Configure the main window."""
     self.title("Webtoon Subscriber Tracker")
-    self.geometry("800x405")
-    self.grid_columnconfigure(0, weight=1)
-    self.grid_columnconfigure(1, weight=2)
+    self.grid_columnconfigure(0, weight=1, minsize=425)
+    self.grid_columnconfigure(1, weight=2, minsize=530)
   
   def _create_layout(self):
     """Create the main GUI layout."""
@@ -39,21 +38,20 @@ class App(ctk.CTk):
     """Create the left panel with controls."""
     self.left_frame = ctk.CTkFrame(self, fg_color="white")
     self.left_frame.grid(row=0, column=0, sticky="nsew", padx=(20, 10), pady=20)
-    self.left_frame.grid_columnconfigure(0, weight=1)
     
     # Title
-    ctk.CTkLabel(self.left_frame, text="ACTIONS", font=("Arial", 18, "bold")).grid(row=0, column=0, pady=10)
+    ctk.CTkLabel(self.left_frame, text="ACTIONS", font=("Arial", 18, "bold")).pack(pady=10)
     
     # URL input
     self.input_entry = ctk.CTkEntry(self.left_frame, placeholder_text="Enter Webtoons URL...")
-    self.input_entry.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 20))
+    self.input_entry.pack(padx=20, pady=(0, 20), expand=True, fill="x")
     
     # Action buttons
     self._create_action_buttons()
     
     # Progress bar
     self.progress_bar = ctk.CTkProgressBar(self.left_frame)
-    self.progress_bar.grid(row=8, column=0, sticky="ew", padx=20, pady=(10, 20))
+    self.progress_bar.pack(padx=20, pady=(10, 20), expand=True, fill="x")
     self.progress_bar.set(0)
     self.progress_bar.configure(mode="determinate")
   
@@ -68,23 +66,20 @@ class App(ctk.CTk):
       ("Generate Report", self._on_generate_report)
     ]
     
-    for i, (text, command) in enumerate(buttons_info, start=2):
-      ctk.CTkButton(self.left_frame, text=text, command=command).grid(row=i, column=0, sticky="ew", padx=20, pady=(0, 10))
+    for text, command in buttons_info:
+      ctk.CTkButton(self.left_frame, text=text, command=command).pack(padx=20, pady=(0, 10), expand=True, fill="x")
   
   def _create_right_panel(self):
     """Create the right panel with webtoon list."""
     self.right_frame = ctk.CTkFrame(self, fg_color="white")
     self.right_frame.grid(row=0, column=1, sticky="nsew", padx=(10, 20), pady=20)
-    self.right_frame.grid_columnconfigure(0, weight=1)
-    self.right_frame.grid_rowconfigure(1, weight=1)
     
     # Title
-    ctk.CTkLabel(self.right_frame, text="LIST", font=("Arial", 18, "bold")).grid(row=0, column=0, pady=10)
+    ctk.CTkLabel(self.right_frame, text="LIST", font=("Arial", 18, "bold")).pack(pady=10)
     
     # Scrollable list
     self.list_frame = ctk.CTkScrollableFrame(self.right_frame)
-    self.list_frame.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 20))
-    self.list_frame.grid_columnconfigure(0, weight=1)
+    self.list_frame.pack(padx=20, pady=(10, 20), expand=True, fill="both")
   
   def _populate_webtoon_list(self):
     """Populate the webtoon list with buttons."""
@@ -94,9 +89,9 @@ class App(ctk.CTk):
     
     # Get sorted webtoons and create buttons
     sorted_webtoons = self.webtoon_manager.get_all_webtoons_sorted()
-    for i, (url, webtoon_data) in enumerate(sorted_webtoons):
+    for url, webtoon_data in sorted_webtoons:
       button = ctk.CTkButton(self.list_frame, text=webtoon_data.title, command=lambda u=url: self._set_input_entry(u))
-      button.grid(row=i, column=0, sticky="ew", pady=2)
+      button.pack(pady=2, expand=True, fill="x")
   
   def _set_input_entry(self, url: str):
     """Set the input entry to the given URL."""
